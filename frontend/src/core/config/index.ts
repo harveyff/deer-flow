@@ -1,5 +1,13 @@
 import { env } from "@/env";
 
+export function isFollowupSuggestionsEnabled() {
+  const val = env.NEXT_PUBLIC_ENABLE_FOLLOWUP_SUGGESTIONS;
+  if (val === undefined || val === "") {
+    return true;
+  }
+  return val === "true" || val === "1";
+}
+
 export function getBackendBaseURL() {
   if (env.NEXT_PUBLIC_BACKEND_BASE_URL) {
     return env.NEXT_PUBLIC_BACKEND_BASE_URL;

@@ -55,7 +55,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { getBackendBaseURL } from "@/core/config";
+import { getBackendBaseURL, isFollowupSuggestionsEnabled } from "@/core/config";
 import { useI18n } from "@/core/i18n/hooks";
 import { useModels } from "@/core/models/hooks";
 import type { AgentThreadContext } from "@/core/threads";
@@ -308,7 +308,7 @@ export function InputBox({
       return;
     }
 
-    if (disabled || isMock) {
+    if (disabled || isMock || !isFollowupSuggestionsEnabled()) {
       return;
     }
 
