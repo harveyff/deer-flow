@@ -3,16 +3,13 @@
 # Stage 2 (dev):     retains toolchain for dev containers (uv sync at startup)
 # Stage 3 (runtime): clean image without compiler toolchain for production
 
-# UV source image (override for restricted networks that cannot reach ghcr.io)
-ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.7.20
-FROM ${UV_IMAGE} AS uv-source
-
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM python:3.12-slim-bookworm AS builder
 
 ARG NODE_MAJOR=22
 ARG APT_MIRROR
 ARG UV_INDEX_URL
+ARG UV_VERSION=0.7.20
 
 # Optionally override apt mirror for restricted networks (e.g. APT_MIRROR=mirrors.aliyun.com)
 RUN if [ -n "${APT_MIRROR}" ]; then \
@@ -33,8 +30,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv (source image overridable via UV_IMAGE build arg)
-COPY --from=uv-source /uv /uvx /usr/local/bin/
+# Install uv from PyPI (avoids ghcr.io dependency)
+RUN pip install --no-cache-dir uv==${UV_VERSION}
 
 # Set working directory
 WORKDIR /app
@@ -71,8 +68,8 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/bin/npm \
 # Install Docker CLI (for DooD: allows starting sandbox containers via host Docker socket)
 COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
 
-# Install uv (source image overridable via UV_IMAGE build arg)
-COPY --from=uv-source /uv /uvx /usr/local/bin/
+# Copy uv from builder (installed via pip)
+COPY --from=builder /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
 
 # Set working directory
 WORKDIR /app
