@@ -1,26 +1,5 @@
 import { env } from "@/env";
 
-interface DeerFlowRuntimeConfig {
-  enableFollowupSuggestions?: boolean;
-}
-
-declare global {
-  interface Window {
-    __DEERFLOW_RUNTIME_CONFIG__?: DeerFlowRuntimeConfig;
-  }
-}
-
-export function isFollowupSuggestionsEnabled() {
-  if (typeof window !== "undefined" && window.__DEERFLOW_RUNTIME_CONFIG__) {
-    return window.__DEERFLOW_RUNTIME_CONFIG__.enableFollowupSuggestions !== false;
-  }
-  const val = env.NEXT_PUBLIC_ENABLE_FOLLOWUP_SUGGESTIONS;
-  if (val === undefined || val === "") {
-    return true;
-  }
-  return val === "true" || val === "1";
-}
-
 export function getBackendBaseURL() {
   if (env.NEXT_PUBLIC_BACKEND_BASE_URL) {
     return env.NEXT_PUBLIC_BACKEND_BASE_URL;

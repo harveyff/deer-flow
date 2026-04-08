@@ -18,18 +18,10 @@ const geist = Geist({
   variable: "--font-geist-sans",
 });
 
-function getRuntimeConfig() {
-  const enableFollowupSuggestions =
-    process.env.ENABLE_FOLLOWUP_SUGGESTIONS !== "false" &&
-    process.env.ENABLE_FOLLOWUP_SUGGESTIONS !== "0";
-  return { enableFollowupSuggestions };
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const locale = await detectLocaleServer();
-  const runtimeConfig = getRuntimeConfig();
   return (
     <html
       lang={locale}
@@ -37,13 +29,6 @@ export default async function RootLayout({
       suppressContentEditableWarning
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.__DEERFLOW_RUNTIME_CONFIG__=${JSON.stringify(runtimeConfig)}`,
-          }}
-        />
-      </head>
       <body>
         <ThemeProvider attribute="class" enableSystem disableTransitionOnChange>
           <I18nProvider initialLocale={locale}>{children}</I18nProvider>
