@@ -1,5 +1,9 @@
 import { env } from "@/env";
 
+export function isFollowupSuggestionsEnabled() {
+  return env.NEXT_PUBLIC_ENABLE_FOLLOWUP_SUGGESTIONS === "true";
+}
+
 export function getBackendBaseURL() {
   if (env.NEXT_PUBLIC_BACKEND_BASE_URL) {
     return env.NEXT_PUBLIC_BACKEND_BASE_URL;
